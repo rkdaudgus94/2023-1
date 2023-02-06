@@ -42,7 +42,7 @@ else :
 # 캠에서 찍은 비디오 저장
 out = cv2.VideoWriter('/home/hyun/video/output.avi',
                 cv2.VideoWriter_fourcc(*'XVID'),
-                20.0,
+                60.0,
                 (frame_width, frame_heigt))
 time = 0
 while True :

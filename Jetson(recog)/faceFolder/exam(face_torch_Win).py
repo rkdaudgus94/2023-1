@@ -24,7 +24,7 @@ face_detection_model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pret
 face_detection_model.eval()
 
 # Load the video capture object
-cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
+cap = cv2.VideoCapture(0)
 
 if cap.isOpened() == False:
     print("Unable to read camera")
@@ -34,9 +34,9 @@ else:
     frame_height = int(cap.get(4))
     
     # Create a video writer object to save the video
-    out = cv2.VideoWriter('/home/hyun/video/output.avi',
+    out = cv2.VideoWriter('C:/Users/rkdau/OneDrive/사진/카메라 앨범/face.avi',
                     cv2.VideoWriter_fourcc(*'XVID'),
-                    20.0,
+                    30.0,
                     (frame_width, frame_height))       
     
     # The transformation to apply to the image before running it through the model
@@ -51,7 +51,6 @@ else:
         
         # Convert the image from BGR to RGB format
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        
         # Convert the image to a PyTorch tensor
         image = transform(frame).unsqueeze(0)
         
@@ -71,3 +70,10 @@ else:
         out.write(frame)
         
         # Display the resulting frame
+        cv2.imshow('frame', frame)
+
+        if cv2.waitKey(0) & 0xFF == ord('q') :
+            break
+cap.release()
+out.release()
+cv2.destroyAllWindows()
