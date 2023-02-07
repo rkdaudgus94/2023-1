@@ -16,3 +16,14 @@ def gstreamer_pipeline(
     framerate,
     flip_method,
     )
+
+cap = cv2.VideoCapture(gstreamer_pipeline(flip_method = 0), cv2.CAP_GSTREAMER)
+
+if cap.isOpened() == False :
+    print("Unable open camera")
+
+else :
+    frame_width = int(cap.get(3))
+    frame_height = int(cap.get(4))
+
+out 
