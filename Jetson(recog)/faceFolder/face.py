@@ -111,4 +111,3 @@ class Facerecognition:
 
 if __name__ == '__main__' :
     run = Facerecognition()
-    run.videocapture()
