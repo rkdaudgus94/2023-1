@@ -33,7 +33,7 @@ def gstreamer_pipeline(
         flip_method,
         )
 
-image_path = r'/home/hyun/face_img/*.png'
+image_path = r'C:/Users/rkdau/OneDrive/바탕 화면/코딩/2023-1/Jetson(recog)/webcam/faces/*.png'
 
 class Facerecognition:
     face_location = []
@@ -47,7 +47,7 @@ class Facerecognition:
         self.encode_faces()
 
     def encode_faces(self):
-        os.chdir('/home/hyun/face_img')
+        os.chdir('C:/Users/rkdau/OneDrive/바탕 화면/코딩/2023-1/Jetson(recog)/webcam/faces')
         file_names = os.listdir()
         for file_name in file_names :
             self.known_face_names.append(os.path.splitext(file_name)[0])
@@ -57,8 +57,8 @@ class Facerecognition:
             self.known_face_encoding.append(face_encoding)
         print(self.known_face_names)
     
-    def video(self):
-        cap = cv2.VideoCapture(gstreamer_pipeline(flip_method = 0), cv2.CAP_GSTREAMER)
+    def runvideo(self):
+        cap = cv2.VideoCapture(0)
 
         if not cap.isOpened() :
             print('unable to open camera')
@@ -99,16 +99,16 @@ class Facerecognition:
 
                 cv2.rectangle(frame, (left, top), (right, bottom), (0,255,0), 1)
                 cv2.rectangle(frame, (left, bottom - 25), (right, bottom), (0,255,0), cv2.FILLED)
-                cv2.putText(frame, name, (left+ 6, bottom - 6), cv2.FONT_HERSHEY_PLAIN, 0.5, (255,255,255),2)
+                cv2.putText(frame, name, (left+ 6, bottom - 6), cv2.FONT_HERSHEY_COMPLEX, 0.6, (255,255,255),2)
 
             cv2.imshow('Face Recognition', frame)
 
             if cv2.waitKey(1) == ord('q'):
                     break
 
-        cap.realease()
+        cap.release()
         cv2.destroyAllWindows()
 
 if __name__ == '__main__' :
     run = Facerecognition()
-    run.video()
+    run.runvideo()
