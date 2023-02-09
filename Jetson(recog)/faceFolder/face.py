@@ -5,22 +5,6 @@ import numpy as np
 import math
 import glob
 
-def gstreamer_pipeline(
-    capture_width=1920,
-    capture_height=1080,
-    display_width=960,
-    display_height=540,
-    framerate=30,
-    flip_method=0,
-    ) :
-    return (
-    capture_width,
-    capture_height,
-    display_width,
-    display_height,
-    framerate,
-    flip_method,
-    )
 
 def face_confidence(face_distance, face_match_threshold=0.6): # face_distance 값과 face_match 임계값을 설정한 사설함수
     range = (1.0 - face_match_threshold)
@@ -43,6 +27,25 @@ class Facerecognition:
     known_face_names = []
     process_current_frame = True
 
+    def gstreamer_pipeline(
+        capture_width=1920,
+        capture_height=1080,
+        display_width=960,
+        display_height=540,
+        framerate=30,
+        flip_method=0,
+        ) :
+        return (
+        capture_width,
+        capture_height,
+        display_width,
+        display_height,
+        framerate,
+        flip_method,
+        )
+
+
+
     def __init__(self):
         self.encode_faces()
 
@@ -58,7 +61,7 @@ class Facerecognition:
         print(self.known_face_names)
     
     def videocapture(self):
-        cap = cv2.VideoCapture(gstreamer_pipeline(flip_method = 0), cv2.CAP_GSTREAMER)
+        cap = cv2.VideoCapture(self.gstreamer_pipeline(flip_method = 0), cv2.CAP_GSTREAMER)
 
         if not cap.isOpened() :
             print('unable to open camera')
@@ -109,3 +112,5 @@ class Facerecognition:
             cap.realease()
             cv2.destroyAllWindows()
 
+if __name__ == '__main__' :
+    run = Facerecognition()
