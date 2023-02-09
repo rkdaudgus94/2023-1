@@ -108,8 +108,8 @@ class Facerecognition:
                 left *= 4
 
                 cv2.rectangle(frame, (left, top), (right, bottom), (0,255,0), 1)
-                cv2.rectangle(frame, (left, bottom - 25), (right, bottom), (0,255,0), cv2.FILLED)
-                cv2.putText(frame, name, (left+ 6, bottom - 6), cv2.FONT_HERSHEY_PLAIN, 0.5, (255,255,255),2)
+                cv2.rectangle(frame, (left, bottom - 30), (right, bottom), (0,255,0), cv2.FILLED)
+                cv2.putText(frame, name, (left+ 10, bottom - 10), cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255),3)
 
             cv2.imshow('Face Recognition', frame)
 
