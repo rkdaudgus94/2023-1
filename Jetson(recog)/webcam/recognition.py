@@ -3,10 +3,11 @@ import os, sys
 import cv2
 import numpy as np
 import math
+import glob
 
-faces ='C:/Users/rkdau/OneDrive/바탕 화면/코딩/2023-1/Jetson(recog)/webcam_face_recognition'
+faces =r'C:/Users/rkdau/OneDrive/바탕 화면/코딩/2023-1/Jetson(recog)/webcam_face_recognition/faces/*.png'
 # Helper
-def face_confidence(face_distance, face_match_threshold=0.6):
+def face_confidence(face_distance, face_match_threshold=0.6): # face_distance 값과 face_match 임계값을 설정한 사설함수
     range = (1.0 - face_match_threshold)
     linear_val = (1.0 - face_distance) / (range * 2.0)
 
@@ -29,12 +30,15 @@ class FaceRecognition:
         self.encode_faces()
 
     def encode_faces(self):
-        for image in os.listdir(faces):
-            face_image = face_recognition.load_image_file(f"C:/Users/rkdau/OneDrive/바탕 화면/코딩/2023-1/Jetson(recog)/webcam_face_recognition/faces/elon.png")
+        os.chdir('C:/Users/rkdau/OneDrive/바탕 화면/코딩/2023-1/Jetson(recog)/webcam_face_recognition/faces')
+        file_names = os.listdir()
+        for file_name in file_names :
+            self.known_face_names.append(os.path.splitext(file_name)[0])
+        for image in glob.glob(faces):
+            face_image = face_recognition.load_image_file(image)
             face_encoding = face_recognition.face_encodings(face_image)[0]
 
             self.known_face_encodings.append(face_encoding)
-            self.known_face_names.append(image)
         print(self.known_face_names)
 
     def run_recognition(self):
@@ -45,7 +49,7 @@ class FaceRecognition:
 
         while True:
             ret, frame = video_capture.read()
-
+            frame = cv2.flip(frame, 1)
             # Only process every other frame of video to save time
             if self.process_current_frame:
                 # Resize frame of video to 1/4 size for faster face recognition processing
@@ -86,9 +90,9 @@ class FaceRecognition:
                 left *= 4
 
                 # Create the frame with the name
-                cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-                cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
-                cv2.putText(frame, name, (left + 6, bottom - 6), cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
+                cv2.rectangle(frame, (left, top-20), (right, bottom), (0, 255, 0), 1)
+                cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 255, 0), cv2.FILLED)
+                cv2.putText(frame, name, (left + 6 , bottom -6 ), cv2.FONT_HERSHEY_COMPLEX, 0.6, (255, 255, 255), 1)
 
             # Display the resulting image
             cv2.imshow('Face Recognition', frame)
