@@ -109,6 +109,3 @@ class Facerecognition:
             cap.realease()
             cv2.destroyAllWindows()
 
-if __name__ == '__main__':
-    a = Facerecognition()
-    a.videocapture()
