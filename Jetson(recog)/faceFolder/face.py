@@ -17,6 +17,7 @@ def face_confidence(face_distance, face_match_threshold=0.6): # face_distance ê°
         return str(round(value, 2)) + '%'
 
 def gstreamer_pipeline(
+        sensor_id=0,
         capture_width=1920,
         capture_height=1080,
         display_width=960,
@@ -25,6 +26,7 @@ def gstreamer_pipeline(
         flip_method=0,
         ) :
         return (
+        sensor_id,
         capture_width,
         capture_height,
         display_width,
