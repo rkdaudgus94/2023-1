@@ -16,18 +16,7 @@ def face_confidence(face_distance, face_match_threshold=0.6): # face_distance ê°
         value = (linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))) * 100
         return str(round(value, 2)) + '%'
 
-
-image_path = r'/home/hyun/face_img/*.png'
-
-class Facerecognition:
-    face_location = []
-    face_encoding = []
-    face_names = []
-    known_face_encoding = []
-    known_face_names = []
-    process_current_frame = True
-
-    def gstreamer_pipeline(
+def gstreamer_pipeline(
         capture_width=1920,
         capture_height=1080,
         display_width=960,
@@ -44,7 +33,15 @@ class Facerecognition:
         flip_method,
         )
 
+image_path = r'/home/hyun/face_img/*.png'
 
+class Facerecognition:
+    face_location = []
+    face_encoding = []
+    face_names = []
+    known_face_encoding = []
+    known_face_names = []
+    process_current_frame = True
 
     def __init__(self):
         self.encode_faces()
@@ -61,7 +58,7 @@ class Facerecognition:
         print(self.known_face_names)
     
     def videocapture(self):
-        cap = cv2.VideoCapture(self.gstreamer_pipeline(flip_method = 0), cv2.CAP_GSTREAMER)
+        cap = cv2.VideoCapture(gstreamer_pipeline(flip_method = 0), cv2.CAP_GSTREAMER)
 
         if not cap.isOpened() :
             print('unable to open camera')
