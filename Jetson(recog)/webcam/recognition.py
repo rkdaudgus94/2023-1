@@ -5,7 +5,7 @@ import numpy as np
 import math
 import glob
 
-faces =r'C:/Users/rkdau/OneDrive/바탕 화면/코딩/2023-1/Jetson(recog)/webcam_face_recognition/faces/*.png'
+faces =r'C:/Users/rkdau/OneDrive/바탕 화면/코딩/2023-1/Jetson(recog)/webcam/faces/*.png'
 # Helper
 def face_confidence(face_distance, face_match_threshold=0.6): # face_distance 값과 face_match 임계값을 설정한 사설함수
     range = (1.0 - face_match_threshold)
@@ -30,7 +30,7 @@ class FaceRecognition:
         self.encode_faces()
 
     def encode_faces(self):
-        os.chdir('C:/Users/rkdau/OneDrive/바탕 화면/코딩/2023-1/Jetson(recog)/webcam_face_recognition/faces')
+        os.chdir('C:/Users/rkdau/OneDrive/바탕 화면/코딩/2023-1/Jetson(recog)/webcam/faces')
         file_names = os.listdir()
         for file_name in file_names :
             self.known_face_names.append(os.path.splitext(file_name)[0])
