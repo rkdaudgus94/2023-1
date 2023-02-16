@@ -1,41 +1,52 @@
-import cv2
-import numpy as np
-import pytesseract
 from imutils.perspective import four_point_transform
 from imutils.contours import sort_contours
 import matplotlib.pyplot as plt
+import pytesseract
 import imutils
+import cv2
 import re
 import requests
+import numpy as np
 pytesseract.pytesseract.tesseract_cmd = "C:/Program Files/Tesseract-OCR/tesseract.exe"
-def gstreamer_pipeline(
-    sensor_id=0,
-    capture_width=1920,
-    capture_height=1080,
-    display_width=960,
-    display_height=540,
-    framerate=30,
-    flip_method=0,
-):
-    return (
-        "nvarguscamerasrc sensor-id=%d !"
-        "video/x-raw(memory:NVMM), width=(int)%d, height=(int)%d, framerate=(fraction)%d/1 ! "
-        "nvvidconv flip-method=%d ! "
-        "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
-        "videoconvert ! "
-        "video/x-raw, format=(string)BGR ! appsink"
-        % (
-            sensor_id,
-            capture_width,
-            capture_height,
-            framerate,
-            flip_method,
-            display_width,
-            display_height,
-        )
-    )
+def plt_imshow(title='image', img=None, figsize=(8 ,5)):
+    plt.figure(figsize=figsize)
 
-def make_scan_image(frame, width=200, ksize=(5,5), min_threshold=75, max_threshold=200):
+    if type(img) == list:
+        if type(title) == list:
+            titles = title
+        else:
+            titles = []
+
+            for i in range(len(img)):
+                titles.append(title)
+
+        for i in range(len(img)):
+            if len(img[i].shape) <= 2:
+                rgbImg = cv2.cvtColor(img[i], cv2.COLOR_GRAY2RGB)
+            else:
+                rgbImg = cv2.cvtColor(img[i], cv2.COLOR_BGR2RGB)
+
+            plt.subplot(1, len(img), i + 1), plt.imshow(rgbImg)
+            plt.title(titles[i])
+            plt.xticks([]), plt.yticks([])
+
+        plt.show()
+    else:
+        if len(img.shape) < 3:
+            rgbImg = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+        else:
+            rgbImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+        plt.imshow(rgbImg)
+        plt.title(title)
+        plt.xticks([]), plt.yticks([])
+        plt.show()
+url = 'https://user-images.githubusercontent.com/69428232/148330274-237d9b23-4a79-4416-8ef1-bb7b2b52edc4.jpg'
+
+image_nparray = np.asarray(bytearray(requests.get(url).content), dtype=np.uint8)
+org_image = cv2.imdecode(image_nparray, cv2. IMREAD_COLOR)
+
+def make_scan_image(image, width, ksize=(5,5), min_threshold=75, max_threshold=200):
   image_list_title = []
   image_list = []
 
@@ -84,42 +95,12 @@ def make_scan_image(frame, width=200, ksize=(5,5), min_threshold=75, max_thresho
   # 원본 이미지에 찾은 윤곽을 기준으로 이미지를 보정
   transform_image = four_point_transform(org_image, findCnt.reshape(4, 2) * ratio)
 
+  plt_imshow(image_list_title, image_list)
+  plt_imshow("Transform", transform_image)
+
   return transform_image
 
-
-cap = cv2.VideoCapture(0)
-if cap.isOpened() == False:
-    print("Unable to read camera")
-
-else :
-# 프레임 정보
-    frame_width = int(cap.get(3))
-    frame_heigt = int(cap.get(4))
-
-# 캠에서 찍은 비디오 저장
-""" out = cv2.VideoWriter('/home/hyun/video/output.avi',
-                cv2.VideoWriter_fourcc(*'XVID'),
-                60.0,
-                (frame_width, frame_heigt)) """
-time = 0
-while True :
-    ret, frame = cap.read()
-    time += 1
-    
-    if ret == True :
-            cv2.imshow('frame', frame)  
-            receipt_image = make_scan_image(frame, width=200, ksize=(5, 5), min_threshold=20, max_threshold=100)
-
-            options = "--psm 4"
-            text = pytesseract.image_to_string(cv2.cvtColor(receipt_image, cv2.COLOR_BGR2RGB), config=options)
-            print(text)
-            if cv2.waitKey(1) & 0xFF == 27 :
-                break
-    else :
-        break
-
-
-receipt_image = make_scan_image(frame, width=200, ksize=(5, 5), min_threshold=20, max_threshold=100)
+receipt_image = make_scan_image(org_image, width=200, ksize=(5, 5), min_threshold=20, max_threshold=100)
 
 options = "--psm 4"
 text = pytesseract.image_to_string(cv2.cvtColor(receipt_image, cv2.COLOR_BGR2RGB), config=options)
