@@ -5,7 +5,7 @@ import numpy as np
 import math
 import glob
 import pytesseract
-
+import time
 
 def face_confidence(face_distance, face_match_threshold=0.6): # face_distance 값과 face_match 임계값을 설정한 사설함수
     range = (1.0 - face_match_threshold)
@@ -104,7 +104,7 @@ class Facerecognition:
                         match_percent = face_confidence(face_distance[best_match_index])
                     
                     self.face_names.append(f'{name} ({match_percent})')
-                
+                    time.sleep(1.5)
             self.process_current_frame = not self.process_current_frame
 
             for (top, right, bottom, left), name in zip(self.face_location, self.face_names) : # 1/4로 축소된 얼굴 크기를 다시 되돌림
